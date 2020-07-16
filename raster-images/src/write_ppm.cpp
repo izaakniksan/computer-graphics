@@ -58,6 +58,5 @@ bool write_ppm(
     return false;
   }
 
-  // cout << to_string((int) data[1]) <<endl;;
   return false;
 }
