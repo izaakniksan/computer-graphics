@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cassert>
 #include <iostream>
+using namespace std;
 
 bool write_ppm(
   const std::string & filename,
@@ -10,8 +11,50 @@ bool write_ppm(
   const int height,
   const int num_channels)
 {
-  ////////////////////////////////////////////////////////////////////////////
-  // Replace with your code here:
+  assert(
+    (num_channels == 3 || num_channels ==1 ) &&
+    ".ppm only supports RGB or grayscale images");
+  
+  // ppm header example:
+  // P3 (magic number)
+  // 50 6 (width height)
+  // 255 (max value)
+
+  ofstream ofile(filename);
+  ofile << "P3" << endl;
+  ofile << width << " " << height << endl;
+  ofile << "255" << endl;
+
+  if (num_channels == 1) {
+    // grayscale image, r=g=b
+    for (int x=0; x<height; ++x){
+      for (int y=0; y<width; ++y){
+        ofile << (int) data[x*width + y] << " ";
+        ofile << (int) data[x*width + y] << " ";
+        ofile << (int) data[x*width + y] << " ";
+      }
+      ofile << endl;
+    }
+    ofile.close();
+    return true;
+
+  } else if (num_channels == 3) {
+    // rgb image
+    for (int x=0; x<height; ++x){
+      for (int y=0; y<width; ++y){
+        ofile << (int) data[3*x*width + 3*y] << " ";
+        ofile << (int) data[3*x*width + 3*y + 1] << " ";
+        ofile << (int) data[3*x*width + 3*y + 2] << " ";
+      }
+      ofile << endl;
+    }
+    ofile.close();
+    return true;
+  } else{
+    cout << "ERROR! numchannels is neither 1 nor 3" << endl;
+    ofile.close();
+    return false;
+  }
+
   return false;
-  ////////////////////////////////////////////////////////////////////////////
 }

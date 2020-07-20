@@ -1,4 +1,5 @@
 #include "viewing_ray.h"
+#include <Eigen/Geometry>
 
 void viewing_ray(
   const Camera & camera,
@@ -8,7 +9,10 @@ void viewing_ray(
   const int height,
   Ray & ray)
 {
-  ////////////////////////////////////////////////////////////////////////////
-  // Add your code here:
-  ////////////////////////////////////////////////////////////////////////////
+  ray.origin = camera.e;
+  ray.direction = -camera.d*camera.w  
+                  + (camera.width/width)*(j + 0.5 -width/2)*camera.u 
+                  + (camera.height/height)*(height/2 - i -0.5)*camera.v;
+  //  std::cout << "direction: " << ray.direction<<std::endl;
 }
+
