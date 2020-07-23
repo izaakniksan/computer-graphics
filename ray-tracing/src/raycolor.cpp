@@ -18,33 +18,10 @@ bool raycolor(
   double t;
   Eigen::Vector3d n;
   bool ret = first_hit(ray, min_t, objects, hit_id, t, n);
+  n.normalize();
+
   if (ret){
-    Eigen::Vector3d q = ray.origin + ray.direction*t;
-    rgb = Eigen::Vector3d(0,0,0);  
-
-    // Lambertian:
-    auto kd = (*(*objects[hit_id]).material).kd;
-
-    // Ambient:
-    // (note that Ia=[0.1,0.1,0.1])
-    // https://github.com/alecjacobson/computer-graphics-ray-tracing/issues/1
-    auto ka = (*(*objects[hit_id]).material).ka;
-    rgb+=ka*0.1;
-    for (auto light : lights){
-      auto I =(*light).I;
-      double temp_max_t;
-      Eigen::Vector3d d; // l in textboox
-      (*light).direction(q, d, temp_max_t);
-      n.normalize();
-      I.normalize();
-      d.normalize();
-      rgb+=(kd.array()*I.array()).matrix()*(std::max(0.0, n.dot(d)));
-    }
-
-    // clamp to 1
-    for (int i=0; i<3; ++i){
-      rgb[i]=std::min(rgb[i],1.0);
-    }
+    rgb = blinn_phong_shading(ray, hit_id, t, n, objects, lights);
   }
   return ret;
 }
