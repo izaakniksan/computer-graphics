@@ -7,5 +7,6 @@ void DirectionalLight::direction(
 {
   d = -this->d;
   max_t = d.norm();
+  d.normalize();
 }
 

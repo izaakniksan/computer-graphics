@@ -5,4 +5,5 @@ void PointLight::direction(
 {
   d=this->p - q;
   max_t = d.norm();
+  d.normalize();
 }

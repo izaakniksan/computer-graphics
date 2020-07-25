@@ -18,6 +18,10 @@ Eigen::Vector3d blinn_phong_shading(
     // Lambertian:
     auto kd = (*(*objects[hit_id]).material).kd;
 
+    // Blinn Phong:
+    auto ks = (*(*objects[hit_id]).material).ks;
+    auto p = (*(*objects[hit_id]).material).phong_exponent;
+
     // Ambient:
     // (note that Ia=[0.1,0.1,0.1])
     // https://github.com/alecjacobson/computer-graphics-ray-tracing/issues/1
@@ -27,10 +31,13 @@ Eigen::Vector3d blinn_phong_shading(
       auto I =(*light).I;
       double temp_max_t;
       Eigen::Vector3d d; // l in textboox
+      Eigen::Vector3d v = - ray.direction; // v in textbook
       (*light).direction(q, d, temp_max_t);
       I.normalize();
       d.normalize();
-      rgb+=(kd.array()*I.array()).matrix()*(std::max(0.0, n.dot(d)));
+      Eigen::Vector3d h = (v + d).normalized();
+      rgb+=(kd.array()*I.array()).matrix()*(std::max(0.0, n.dot(d))); // Lambertian
+      rgb+= (ks.array()*I.array()).matrix()*(std::max(0.0, pow(n.dot(h),p))); // Blinn Phong
     }
 
     // clamp to 1
