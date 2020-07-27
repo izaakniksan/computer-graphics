@@ -35,9 +35,20 @@ Eigen::Vector3d blinn_phong_shading(
       (*light).direction(q, d, temp_max_t);
       I.normalize();
       d.normalize();
-      Eigen::Vector3d h = (v + d).normalized();
-      rgb+=(kd.array()*I.array()).matrix()*(std::max(0.0, n.dot(d))); // Lambertian
-      rgb+= (ks.array()*I.array()).matrix()*(std::max(0.0, pow(n.dot(h),p))); // Blinn Phong
+
+      // Is point q in shadow?
+      Ray shadow_ray;
+      shadow_ray.origin = q;
+      shadow_ray.direction = d;
+      int garbage;
+      double garbage2;
+      Eigen::Vector3d garbage3;
+      if (!first_hit(shadow_ray, 0.00001, objects, garbage, garbage2, garbage3)) {
+
+        Eigen::Vector3d h = (v + d).normalized();
+        rgb+=(kd.array()*I.array()).matrix()*(std::max(0.0, n.dot(d))); // Lambertian
+        rgb+= (ks.array()*I.array()).matrix()*(std::max(0.0, pow(n.dot(h),p))); // Blinn 
+      }
     }
 
     // clamp to 1
