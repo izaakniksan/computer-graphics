@@ -3,6 +3,8 @@
 #include "first_hit.h"
 #include <iostream>
 
+const double epsilon = 0.0001;
+
 Eigen::Vector3d blinn_phong_shading(
   const Ray & ray,
   const int & hit_id, 
@@ -43,8 +45,7 @@ Eigen::Vector3d blinn_phong_shading(
       int garbage;
       double garbage2;
       Eigen::Vector3d garbage3;
-      if (!first_hit(shadow_ray, 0.00001, objects, garbage, garbage2, garbage3)) {
-
+      if (!first_hit(shadow_ray, epsilon, objects, garbage, garbage2, garbage3)) {
         Eigen::Vector3d h = (v + d).normalized();
         rgb+=(kd.array()*I.array()).matrix()*(std::max(0.0, n.dot(d))); // Lambertian
         rgb+= (ks.array()*I.array()).matrix()*(std::max(0.0, pow(n.dot(h),p))); // Blinn 
